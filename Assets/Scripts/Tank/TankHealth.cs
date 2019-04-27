@@ -9,6 +9,9 @@ public class TankHealth : MonoBehaviour
     public Color m_FullHealthColor = Color.green;       // The color the health bar will be when on full health.
     public Color m_ZeroHealthColor = Color.red;         // The color the health bar will be when on no health.
     public GameObject m_ExplosionPrefab;                // A prefab that will be instantiated in Awake, then used whenever the tank dies.
+    public int lives = 3;                               // A quantidade de vidas que cada tank possui
+    public Vector3 posInicial;                          // A posição de renascimento do tank depois que esgota uma vida
+    public Quaternion rotInitical;                      // Rotação inicial do tank
 
 
     private AudioSource m_ExplosionAudio;               // The audio source to play when the tank explodes.
@@ -27,6 +30,10 @@ public class TankHealth : MonoBehaviour
 
         // Disable the prefab so it can be activated when it's required.
         m_ExplosionParticles.gameObject.SetActive(false);
+
+        // Pega o spawn point inicial do objeto
+        posInicial = transform.position;
+        rotInitical = transform.rotation;
     }
 
 
@@ -69,9 +76,6 @@ public class TankHealth : MonoBehaviour
 
     private void OnDeath()
     {
-        // Set the flag so that this function is only called once.
-        m_Dead = true;
-
         // Move the instantiated explosion prefab to the tank's position and turn it on.
         m_ExplosionParticles.transform.position = transform.position;
         m_ExplosionParticles.gameObject.SetActive(true);
@@ -82,7 +86,28 @@ public class TankHealth : MonoBehaviour
         // Play the tank explosion sound effect.
         m_ExplosionAudio.Play();
 
-        // Turn the tank off.
-        gameObject.SetActive(false);
+        // atualiza o contador total de vidas
+        lives--;
+
+        // verifica se já esgotou o total de vida e termina o round
+        // senão faz respawn do tank e reseta a posição/rotação
+        if (lives <= 0) {
+            // Turn the tank off.
+            gameObject.SetActive(false);
+            
+            // Set the flag so that this function is only called once.
+            m_Dead = true;
+        }
+        else {
+            // Depois que uma das vidas se esgota, reseta a posição e rotação do tank que morreu
+            transform.position = posInicial;
+            transform.rotation = rotInitical;
+
+            // reseta a vida do tank
+            m_CurrentHealth = m_StartingHealth;
+
+            // Atualiza os elementos de UI
+            SetHealthUI();
+        }
     }
 }
