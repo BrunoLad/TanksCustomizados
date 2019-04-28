@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 public class TankMovement : MonoBehaviour
 {
@@ -17,6 +18,7 @@ public class TankMovement : MonoBehaviour
     private float m_MovementInputValue;         // The current value of the movement input.
     private float m_TurnInputValue;             // The current value of the turn input.
     private float m_OriginalPitch;              // The pitch of the audio source at the start of the scene.        
+    public Text text;                           // Referência ao elemento de UI para mostrar o número do jogador
 
 
     private void Awake()
@@ -33,6 +35,9 @@ public class TankMovement : MonoBehaviour
         // Also reset the input values.
         m_MovementInputValue = 0f;
         m_TurnInputValue = 0f;
+
+        // Inicia o tank com o número do jogador correspondente
+        text.text = $"Player {m_PlayerNumber}";
     }
 
 
