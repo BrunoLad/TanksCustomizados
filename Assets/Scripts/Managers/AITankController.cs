@@ -51,8 +51,6 @@ public class AITankController : FSM
         // Go to dead state if there is no health left
         if (this.tankHealth.m_CurrentHealth <= 0)
             curState = FSMState.Dead;
-
-        Debug.Log(curState);
     }
 
     private void UpdateDeadState()

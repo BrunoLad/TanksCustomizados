@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class ShellExplosion : MonoBehaviour
 {
@@ -22,12 +23,18 @@ public class ShellExplosion : MonoBehaviour
     {
         // Collect all the colliders in a sphere from the shell's current position to a radius of the explosion radius.
         Collider[] colliders = Physics.OverlapSphere(transform.position, m_ExplosionRadius, m_TankMask);
+        Collider[] collidersAI = Physics.OverlapSphere(transform.position, m_ExplosionRadius, LayerMask.GetMask("Bots"));
+        Debug.Log(LayerMask.GetMask("Bots"));
+        var collidersAux = new List<Collider>();
+        collidersAux.AddRange(colliders);
+        collidersAux.AddRange(collidersAI);
+        Collider[] allColliders = collidersAux.ToArray();
 
         // Go through all the colliders...
-        for (int i = 0; i < colliders.Length; i++)
+        for (int i = 0; i < allColliders.Length; i++)
         {
             // ... and find their rigidbody.
-            Rigidbody targetRigidbody = colliders[i].GetComponent<Rigidbody>();
+            Rigidbody targetRigidbody = allColliders[i].GetComponent<Rigidbody>();
 
             // If they don't have a rigidbody, go on to the next collider.
             if (!targetRigidbody)
