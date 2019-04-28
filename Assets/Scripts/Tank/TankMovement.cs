@@ -11,6 +11,7 @@ public class TankMovement : MonoBehaviour
     public AudioClip m_EngineDriving;                       // Audio to play when the tank is moving.
     public float m_PitchRange = 0.2f;                       // The amount by which the pitch of the engine noises can vary.
     [HideInInspector] public string m_ColoredPlayerText;    // Uma string que combina com a cor do tank
+    public bool m_IsAI;
 
 
     private string m_MovementAxisName;                      // The name of the input axis for moving forward and back.
@@ -67,9 +68,12 @@ public class TankMovement : MonoBehaviour
 
     private void Update()
     {
-        // Store the value of both input axes.
-        m_MovementInputValue = Input.GetAxis(m_MovementAxisName);
-        m_TurnInputValue = Input.GetAxis(m_TurnAxisName);
+        if (!m_IsAI)
+        {
+            // Store the value of both input axes.
+            m_MovementInputValue = Input.GetAxis(m_MovementAxisName);
+            m_TurnInputValue = Input.GetAxis(m_TurnAxisName);
+        }
 
         EngineAudio();
     }

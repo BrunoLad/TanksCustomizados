@@ -13,6 +13,7 @@ public class TankShooting : MonoBehaviour
     public float m_MinLaunchForce = 15f;        // The force given to the shell if the fire button is not held.
     public float m_MaxLaunchForce = 30f;        // The force given to the shell if the fire button is held for the max charge time.
     public float m_MaxChargeTime = 0.75f;       // How long the shell can charge for before it is fired at max force.
+    public bool m_IsAI;
 
 
     private string m_FireButton;                // The input axis that is used for launching shells.
@@ -41,6 +42,11 @@ public class TankShooting : MonoBehaviour
 
     private void Update()
     {
+        if (m_IsAI)
+        {
+            return;
+        }
+        
         // The slider should have a default value of the minimum launch force.
         m_AimSlider.value = m_MinLaunchForce;
 
@@ -79,8 +85,14 @@ public class TankShooting : MonoBehaviour
     }
 
 
-    private void Fire()
+    public void Fire()
     {
+        // Se for AI, atiraremos com uma força média
+        if (m_IsAI)
+        {
+            m_CurrentLaunchForce = m_MaxLaunchForce / 2.0f;
+        }
+        
         // Set the fired flag so only Fire is only called once.
         m_Fired = true;
 

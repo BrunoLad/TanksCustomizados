@@ -15,11 +15,11 @@ public class TankHealth : MonoBehaviour
     [HideInInspector] public Vector3 posInicial;        // A posição de renascimento do tank depois que esgota uma vida
     [HideInInspector] public Quaternion rotInitical;    // Rotação inicial do tank
     public GameObject livesUI;                          // Referência para as sprites de vidas
+    [HideInInspector] public float m_CurrentHealth;     // How much health the tank currently has.
 
 
     private AudioSource m_ExplosionAudio;               // The audio source to play when the tank explodes.
     private ParticleSystem m_ExplosionParticles;        // The particle system the will play when the tank is destroyed.
-    private float m_CurrentHealth;                      // How much health the tank currently has.
     private bool m_Dead;                                // Has the tank been reduced beyond zero health yet?
 
 
