@@ -37,9 +37,20 @@ public class TankManager
         m_Movement.m_PlayerNumber = m_PlayerNumber;
         m_Shooting.m_PlayerNumber = m_PlayerNumber;
 
-        // Create a string using the correct color that says 'PLAYER 1' etc based on the tank's color and the player's number.
-        m_ColoredPlayerText = "<color=#" + ColorUtility.ToHtmlStringRGB(m_PlayerColor) + ">PLAYER " + m_PlayerNumber + "</color>";
+        Debug.Log(m_Instance.layer);
+        Debug.Log(LayerMask.NameToLayer("Players"));
 
+        if (m_Instance.layer == LayerMask.NameToLayer("Players"))
+        {
+            // Create a string using the correct color that says 'PLAYER 1' etc based on the tank's color and the player's number.
+            m_ColoredPlayerText = "<color=#" + ColorUtility.ToHtmlStringRGB(m_PlayerColor) + ">PLAYER " + m_PlayerNumber + "</color>";
+        }
+        else
+        {
+            // Create a string using the correct color that says 'Bot 1' etc based on the tank's color and the Bot's number.
+            m_ColoredPlayerText = "<color=#" + ColorUtility.ToHtmlStringRGB(m_PlayerColor) + ">Bot " + m_PlayerNumber + "</color>";
+        }
+        
         // Get all of the renderers of the tank.
         MeshRenderer[] renderers = m_Instance.GetComponentsInChildren<MeshRenderer>();
 

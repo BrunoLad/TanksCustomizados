@@ -24,7 +24,6 @@ public class ShellExplosion : MonoBehaviour
         // Collect all the colliders in a sphere from the shell's current position to a radius of the explosion radius.
         Collider[] colliders = Physics.OverlapSphere(transform.position, m_ExplosionRadius, m_TankMask);
         Collider[] collidersAI = Physics.OverlapSphere(transform.position, m_ExplosionRadius, LayerMask.GetMask("Bots"));
-        Debug.Log(LayerMask.GetMask("Bots"));
         var collidersAux = new List<Collider>();
         collidersAux.AddRange(colliders);
         collidersAux.AddRange(collidersAI);
