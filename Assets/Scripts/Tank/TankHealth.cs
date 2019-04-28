@@ -54,6 +54,16 @@ public class TankHealth : MonoBehaviour
         SetLivesUI();
     }
 
+    private void Update()
+    {
+        Image[] imgs = livesUI.GetComponentsInChildren<Image>();
+
+        foreach (Image img in imgs)
+        {
+            img.transform.Rotate(0, 5, 0);
+        }
+    }
+
 
     public void TakeDamage(float amount)
     {
