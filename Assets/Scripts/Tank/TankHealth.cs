@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class TankHealth : MonoBehaviour
@@ -12,6 +14,7 @@ public class TankHealth : MonoBehaviour
     public int lives = 3;                               // A quantidade de vidas que cada tank possui
     public Vector3 posInicial;                          // A posição de renascimento do tank depois que esgota uma vida
     public Quaternion rotInitical;                      // Rotação inicial do tank
+    bool isInvincible = false;                          // Deixa o tank invulnerável alguns segundos após a morte.
 
 
     private AudioSource m_ExplosionAudio;               // The audio source to play when the tank explodes.
@@ -108,6 +111,45 @@ public class TankHealth : MonoBehaviour
 
             // Atualiza os elementos de UI
             SetHealthUI();
+
+            StartCoroutine(Flasher());
+            StartCoroutine(Invincible());
         }
+    }
+
+    // Faz o objeto piscar para mostrar que acabou de ser renascido
+    IEnumerator Flasher()
+    { 
+        // cria uma referência para todos os Renderers do prefab
+        Renderer[] rends = GetComponentsInChildren<Renderer>();
+
+        for (int i = 0; i < 15; i++)
+        {
+
+            foreach (Renderer r in rends)
+            {
+                // inativa o mesh para deixar a instância 'invisível'
+                r.enabled = false;
+            }
+
+            yield return new WaitForSeconds(.1f);
+
+            foreach (Renderer r in rends)
+            {
+                // reativa o mesh para torná-lo visível
+                r.enabled = true;
+            }
+
+            yield return new WaitForSeconds(.1f);
+        }
+    }
+
+    IEnumerator Invincible()
+    {
+        GetComponent<Collider>().enabled = false;
+        GetComponent<Rigidbody>().isKinematic = true;
+        yield return new WaitForSeconds(3f);
+        GetComponent<Collider>().enabled = true;
+        GetComponent<Rigidbody>().isKinematic = false;
     }
 }
