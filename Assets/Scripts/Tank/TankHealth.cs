@@ -12,9 +12,9 @@ public class TankHealth : MonoBehaviour
     public Color m_ZeroHealthColor = Color.red;         // The color the health bar will be when on no health.
     public GameObject m_ExplosionPrefab;                // A prefab that will be instantiated in Awake, then used whenever the tank dies.
     public int lives = 3;                               // A quantidade de vidas que cada tank possui
-    public Vector3 posInicial;                          // A posição de renascimento do tank depois que esgota uma vida
-    public Quaternion rotInitical;                      // Rotação inicial do tank
-    bool isInvincible = false;                          // Deixa o tank invulnerável alguns segundos após a morte.
+    [HideInInspector] public Vector3 posInicial;        // A posição de renascimento do tank depois que esgota uma vida
+    [HideInInspector] public Quaternion rotInitical;    // Rotação inicial do tank
+    public GameObject livesUI;                          // Referência para as sprites de vidas
 
 
     private AudioSource m_ExplosionAudio;               // The audio source to play when the tank explodes.
@@ -43,11 +43,15 @@ public class TankHealth : MonoBehaviour
     private void OnEnable()
     {
         // When the tank is enabled, reset the tank's health and whether or not it's dead.
+        // e também o número de vidas
         m_CurrentHealth = m_StartingHealth;
         m_Dead = false;
+        lives = 3;
 
         // Update the health slider's value and color.
+        // Atualiza também a quantidade corações a exibir
         SetHealthUI();
+        SetLivesUI();
     }
 
 
@@ -74,6 +78,30 @@ public class TankHealth : MonoBehaviour
 
         // Interpolate the color of the bar between the choosen colours based on the current percentage of the starting health.
         m_FillImage.color = Color.Lerp(m_ZeroHealthColor, m_FullHealthColor, m_CurrentHealth / m_StartingHealth);
+    }
+
+    private void SetLivesUI()
+    {
+        // Pega as referências das imagens dos corações
+        Image[] hearts = livesUI.GetComponentsInChildren<Image>();
+
+        if (lives == 3)
+        {
+            foreach (Image heart in hearts)
+            {
+                // exibe todos caso a quantidade de vidas seja a total
+                // Chamado quando a rodada é iniciada
+                heart.enabled = true;
+            }
+        }
+        else
+        {
+            for (int i = 2; i > (lives - 1); i--)
+            {
+                // Vai atualizando a UI conforme a vida vai diminuindo
+                hearts[i].enabled = false;
+            }
+        }
     }
 
 
@@ -109,20 +137,25 @@ public class TankHealth : MonoBehaviour
             // reseta a vida do tank
             m_CurrentHealth = m_StartingHealth;
 
-            // Atualiza os elementos de UI
+            // Reseta a barra de vida
             SetHealthUI();
 
+            SetLivesUI();
+
+            // Chama as funções que deixa o tank invulnerável e a 'animação'
             StartCoroutine(Flasher());
             StartCoroutine(Invincible());
         }
     }
 
-    // Faz o objeto piscar para mostrar que acabou de ser renascido
+    // Faz o objeto 'piscar' para mostrar que acabou de ser renascido
     IEnumerator Flasher()
     { 
         // cria uma referência para todos os Renderers do prefab
         Renderer[] rends = GetComponentsInChildren<Renderer>();
 
+        // Itera por um valor arbitrário e alterna o mesh a cada .1s
+        // Dando a ilusão de que o objeto está 'piscando'
         for (int i = 0; i < 15; i++)
         {
 
@@ -144,11 +177,17 @@ public class TankHealth : MonoBehaviour
         }
     }
 
+    // Deixa o tank 'invencível' por 3 segundos logo após o respawn
     IEnumerator Invincible()
     {
+        // Desativa o collider para não tomar dano
+        // Transforma em kinematic para não se movimentar
         GetComponent<Collider>().enabled = false;
         GetComponent<Rigidbody>().isKinematic = true;
+
         yield return new WaitForSeconds(3f);
+
+        // Restaura as condições iniciais do tank
         GetComponent<Collider>().enabled = true;
         GetComponent<Rigidbody>().isKinematic = false;
     }
