@@ -3,22 +3,23 @@ using UnityEngine.UI;
 
 public class TankMovement : MonoBehaviour
 {
-    public int m_PlayerNumber = 1;              // Used to identify which tank belongs to which player.  This is set by this tank's manager.
-    public float m_Speed = 12f;                 // How fast the tank moves forward and back.
-    public float m_TurnSpeed = 180f;            // How fast the tank turns in degrees per second.
-    public AudioSource m_MovementAudio;         // Reference to the audio source used to play engine sounds. NB: different to the shooting audio source.
-    public AudioClip m_EngineIdling;            // Audio to play when the tank isn't moving.
-    public AudioClip m_EngineDriving;           // Audio to play when the tank is moving.
-    public float m_PitchRange = 0.2f;           // The amount by which the pitch of the engine noises can vary.
+    public int m_PlayerNumber = 1;                          // Used to identify which tank belongs to which player.  This is set by this tank's manager.
+    public float m_Speed = 12f;                             // How fast the tank moves forward and back.
+    public float m_TurnSpeed = 180f;                        // How fast the tank turns in degrees per second.
+    public AudioSource m_MovementAudio;                     // Reference to the audio source used to play engine sounds. NB: different to the shooting audio source.
+    public AudioClip m_EngineIdling;                        // Audio to play when the tank isn't moving.
+    public AudioClip m_EngineDriving;                       // Audio to play when the tank is moving.
+    public float m_PitchRange = 0.2f;                       // The amount by which the pitch of the engine noises can vary.
+    [HideInInspector] public string m_ColoredPlayerText;    // Uma string que combina com a cor do tank
 
 
-    private string m_MovementAxisName;          // The name of the input axis for moving forward and back.
-    private string m_TurnAxisName;              // The name of the input axis for turning.
-    private Rigidbody m_Rigidbody;              // Reference used to move the tank.
-    private float m_MovementInputValue;         // The current value of the movement input.
-    private float m_TurnInputValue;             // The current value of the turn input.
-    private float m_OriginalPitch;              // The pitch of the audio source at the start of the scene.        
-    public Text text;                           // Referência ao elemento de UI para mostrar o número do jogador
+    private string m_MovementAxisName;                      // The name of the input axis for moving forward and back.
+    private string m_TurnAxisName;                          // The name of the input axis for turning.
+    private Rigidbody m_Rigidbody;                          // Reference used to move the tank.
+    private float m_MovementInputValue;                     // The current value of the movement input.
+    private float m_TurnInputValue;                         // The current value of the turn input.
+    private float m_OriginalPitch;                          // The pitch of the audio source at the start of the scene.        
+    public Text text;                                       // Referência ao elemento de UI para mostrar o número do jogador
 
 
     private void Awake()
@@ -36,8 +37,13 @@ public class TankMovement : MonoBehaviour
         m_MovementInputValue = 0f;
         m_TurnInputValue = 0f;
 
-        // Inicia o tank com o número do jogador correspondente
-        text.text = $"Player {m_PlayerNumber}";
+        // Inicia o tank com o número do jogador correspondente e cor correspondente de string
+        m_ColoredPlayerText = "<color=#" + ColorUtility.
+            ToHtmlStringRGB(gameObject.GetComponentInChildren<Renderer>().material.color) +
+            ">PLAYER " + m_PlayerNumber + "</color>";
+
+        //atribui este valor para o elemento de texto
+        text.text = m_ColoredPlayerText;
     }
 
 

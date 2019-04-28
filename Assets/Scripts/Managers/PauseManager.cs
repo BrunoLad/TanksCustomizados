@@ -2,6 +2,8 @@
 using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.Audio;
+using System;
+using UnityEngine.SceneManagement;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -13,40 +15,43 @@ public class PauseManager : MonoBehaviour
     public AudioMixerSnapshot unpaused;             // snapshot para áudio enquanto o jogo não estiver pausado
     public GameManager gm;                          // referência ao script para controlar os tanks
 
-    Canvas canvas;                                  // Referência ao menu de pausa do jogo
-    private bool isActive =  true;                  // Flag para o estado dos controles do tank
+    GameObject[] pauseObjects;                      // Referência ao menu de pausa do jogo
+    public bool isActive =  true;                  // Flag para o estado dos controles do tank
 
     void Start()
     {
-        canvas = GetComponent<Canvas>();  
+        //canvas = GetComponent<Canvas>();
+        pauseObjects = GameObject.FindGameObjectsWithTag("ShowOnPause");
+        HidePaused();
     }
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            canvas.enabled = !canvas.enabled;
+            // Função handler para pausar o jogo
             Pause();
-
-            // Desativa cada um dos tanks na Cena, parando os tanks
-            foreach (TankManager tm in gm.m_Tanks)
-            {
-                if (isActive)
-                {
-                    tm.DisableControl();
-                } else
-                {
-                    tm.EnableControl();
-                }
-            }
-
-            isActive = !isActive;
         }
     }
 
+    // Controla a pausa da cena e cria a referência para controlar via botão
     public void Pause()
     {
-        Time.timeScale = Time.timeScale == 0 ? 1 : 0;
+        if (Time.timeScale == 1)
+        {
+            Time.timeScale = 0;
+            ShowPaused();
+        }
+        else
+        {
+            Time.timeScale = 1;
+            HidePaused();
+        }
+
+
+        ChangeTankControl();
+        isActive = !isActive;
+
         Lowpass();
     }
 
@@ -62,6 +67,51 @@ public class PauseManager : MonoBehaviour
         {
             unpaused.TransitionTo(.01f);
         }
+    }
+
+    //Esconde os objetos com a tag ShowOnPause
+    private void HidePaused()
+    {
+        foreach (GameObject g in pauseObjects)
+        {
+            g.SetActive(false);
+        }
+    }
+
+    // Mostra os objetos com a tag ShowOnPause
+    private void ShowPaused()
+    {
+        foreach (GameObject g in pauseObjects)
+        {
+            g.SetActive(true);
+        }
+    }
+
+    //Reloads the Level
+    public void Reload()
+    {
+        Pause();
+        SceneManager.LoadScene(0);
+    }
+
+    //loads inputted level
+    public void LoadLevel(string level)
+    {
+        Application.LoadLevel(level);
+    }
+
+    private void ChangeTankControl() {
+        // Desativa cada um dos tanks na Cena, parando os tanks
+            foreach (TankManager tm in gm.m_Tanks)
+            {
+                if (isActive)
+                {
+                    tm.DisableControl();
+                } else
+                {
+                    tm.EnableControl();
+                }
+            }
     }
 
     public void Quit()
