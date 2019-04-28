@@ -14,9 +14,11 @@ public class PauseManager : MonoBehaviour
     public AudioMixerSnapshot paused;               // snapshot para áudio enquanto o jogo estiver pausado
     public AudioMixerSnapshot unpaused;             // snapshot para áudio enquanto o jogo não estiver pausado
     public GameManager gm;                          // referência ao script para controlar os tanks
+    public ColorPicker picker;
 
     GameObject[] pauseObjects;                      // Referência ao menu de pausa do jogo
     public bool isActive =  true;                  // Flag para o estado dos controles do tank
+
 
     void Start()
     {
@@ -97,7 +99,10 @@ public class PauseManager : MonoBehaviour
     //loads inputted level
     public void LoadLevel(string level)
     {
-        Application.LoadLevel(level);
+        //Salva a preferência de cor definida pelo usuário
+        PlayerPrefs.SetString("Player1", ColorUtility.ToHtmlStringRGBA(picker.CurrentColor));
+
+        SceneManager.LoadScene(level);
     }
 
     private void ChangeTankControl() {

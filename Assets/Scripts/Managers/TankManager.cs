@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEditor;
 
 [Serializable]
 public class TankManager
@@ -28,6 +29,9 @@ public class TankManager
         m_Movement = m_Instance.GetComponent<TankMovement>();
         m_Shooting = m_Instance.GetComponent<TankShooting>();
         m_CanvasGameObject = m_Instance.GetComponentInChildren<Canvas>().gameObject;
+
+        // Atribuindo a cor escolhida pelo usuário ao tank
+        ColorUtility.TryParseHtmlString("#" + PlayerPrefs.GetString("Player1"), out m_PlayerColor);
 
         // Set the player numbers to be consistent across the scripts.
         m_Movement.m_PlayerNumber = m_PlayerNumber;
