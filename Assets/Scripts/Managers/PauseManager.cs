@@ -20,7 +20,6 @@ public class PauseManager : MonoBehaviour
 
     void Start()
     {
-        //canvas = GetComponent<Canvas>();
         pauseObjects = GameObject.FindGameObjectsWithTag("ShowOnPause");
         HidePaused();
     }
@@ -91,7 +90,8 @@ public class PauseManager : MonoBehaviour
     public void Reload()
     {
         Pause();
-        SceneManager.LoadScene(0);
+        Scene scene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(scene.name);
     }
 
     //loads inputted level

@@ -40,7 +40,7 @@ public class TankMovement : MonoBehaviour
         // Inicia o tank com o número do jogador correspondente e cor correspondente de string
         m_ColoredPlayerText = "<color=#" + ColorUtility.
             ToHtmlStringRGB(gameObject.GetComponentInChildren<Renderer>().material.color) +
-            ">PLAYER " + m_PlayerNumber + "</color>";
+            ">" + m_PlayerNumber + "</color>";
 
         //atribui este valor para o elemento de texto
         text.text = m_ColoredPlayerText;
