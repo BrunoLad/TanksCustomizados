@@ -32,23 +32,24 @@ public class TankManager
 
         // Atribuindo a cor escolhida pelo usuário ao tank
         ColorUtility.TryParseHtmlString("#" + PlayerPrefs.GetString("Player1"), out m_PlayerColor);
+        Debug.Log(m_PlayerColor);
 
         // Set the player numbers to be consistent across the scripts.
         m_Movement.m_PlayerNumber = m_PlayerNumber;
         m_Shooting.m_PlayerNumber = m_PlayerNumber;
 
-        Debug.Log(m_Instance.layer);
-        Debug.Log(LayerMask.NameToLayer("Players"));
+        Color botColorref = RandomColorGenerator();
+        Debug.Log(botColorref);
 
         if (m_Instance.layer == LayerMask.NameToLayer("Players"))
         {
             // Create a string using the correct color that says 'PLAYER 1' etc based on the tank's color and the player's number.
-            m_ColoredPlayerText = "<color=#" + ColorUtility.ToHtmlStringRGB(m_PlayerColor) + ">PLAYER " + m_PlayerNumber + "</color>";
+            m_ColoredPlayerText = "<color=#" + ColorUtility.ToHtmlStringRGBA(m_PlayerColor) + ">PLAYER " + m_PlayerNumber + "</color>";
         }
         else
         {
             // Create a string using the correct color that says 'Bot 1' etc based on the tank's color and the Bot's number.
-            m_ColoredPlayerText = "<color=#" + ColorUtility.ToHtmlStringRGB(m_PlayerColor) + ">Bot " + m_PlayerNumber + "</color>";
+            m_ColoredPlayerText = "<color=#" + ColorUtility.ToHtmlStringRGBA(botColorref) + ">Bot " + m_PlayerNumber + "</color>";
         }
         
         // Get all of the renderers of the tank.
@@ -58,8 +59,28 @@ public class TankManager
         for (int i = 0; i < renderers.Length; i++)
         {
             // ... set their material color to the color specific to this tank.
-            renderers[i].material.color = m_PlayerColor;
+            if (m_Instance.layer == LayerMask.NameToLayer("Players"))
+            {
+                renderers[i].material.color = m_PlayerColor;
+            } else
+            {
+                renderers[i].material.color = botColorref;
+            }
         }
+    }
+
+    // Gera uma textura aleatória para os bots
+    private Color RandomColorGenerator()
+    {
+        float[] refs = new float[4];
+        for (int i = 0; i < 4; i++)
+        {
+            refs[i] = UnityEngine.Random.Range(0.0f, 1.0f);
+        }
+
+        Color c = new Color(refs[0], refs[1], refs[2], refs[3]);
+
+        return c;
     }
 
 

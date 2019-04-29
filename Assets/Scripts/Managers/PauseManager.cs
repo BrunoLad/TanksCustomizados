@@ -18,7 +18,7 @@ public class PauseManager : MonoBehaviour
 
     GameObject[] pauseObjects;                      // Referência ao menu de pausa do jogo
     public bool isActive =  true;                  // Flag para o estado dos controles do tank
-
+    public static AsyncOperation async;
 
     void Start()
     {
@@ -99,10 +99,37 @@ public class PauseManager : MonoBehaviour
     //loads inputted level
     public void LoadLevel(string level)
     {
-        //Salva a preferência de cor definida pelo usuário
+        SceneManager.LoadSceneAsync("TankSelector");
+
+        StartCoroutine(LoadYourAsyncScene(level));
+    }
+
+    IEnumerator LoadYourAsyncScene(string level)
+    {
+        // The Application loads the Scene in the background as the current Scene runs.
+        // This is particularly good for creating loading screens.
+        // You could also load the Scene by using sceneBuildIndex. In this case Scene2 has
+        // a sceneBuildIndex of 1 as shown in Build Settings.
+
+        async = SceneManager.LoadSceneAsync(level);
+        async.allowSceneActivation = false;
+
+        //// Wait until the asynchronous scene fully loads
+        //while (!asyncLoad.isDone)
+        //{
+        //    yield return null;
+        //}
+
+        yield return async;
+    }
+
+    public void ActivateScene()
+    {
+        // Carrega a cor escolhida pelo usuário
+        PlayerPrefs.DeleteKey("Player1");
         PlayerPrefs.SetString("Player1", ColorUtility.ToHtmlStringRGBA(picker.CurrentColor));
 
-        SceneManager.LoadScene(level);
+        async.allowSceneActivation = true;
     }
 
     private void ChangeTankControl() {

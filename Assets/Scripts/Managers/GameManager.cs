@@ -40,7 +40,7 @@ public class GameManager : MonoBehaviour
         // For all the tanks...
         for (int i = 0; i < m_Tanks.Length; i++)
         {
-            if (i == m_Tanks.Length - 1)
+            if (i == m_Tanks.Length - 1 && m_TankAIPrefab != null)
             {
                 // Se for o último tanque, será AI
                 m_Tanks[i].m_Instance =
