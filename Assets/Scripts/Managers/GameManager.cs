@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     public GameObject m_TankPrefab;             // Reference to the prefab the players will control.
     public GameObject m_TankAIPrefab;           // Reference to the prefab the AI will control
     public TankManager[] m_Tanks;               // A collection of managers for enabling and disabling different aspects of the tanks.
+    public int botTotal;
 
 
     private int m_RoundNumber;                  // Which round the game is currently on.
@@ -37,25 +38,24 @@ public class GameManager : MonoBehaviour
 
     private void SpawnAllTanks()
     {
-        // For all the tanks...
-        for (int i = 0; i < m_Tanks.Length; i++)
+        // For all player tanks
+        for (int i = 0; i < m_Tanks.Length - botTotal; i++)
         {
-            if (i == m_Tanks.Length - 1 && m_TankAIPrefab != null)
-            {
-                // Se for o último tanque, será AI
-                m_Tanks[i].m_Instance =
-                    Instantiate(m_TankAIPrefab, m_Tanks[i].m_SpawnPoint.position, m_Tanks[i].m_SpawnPoint.rotation) as GameObject;
-                m_Tanks[i].m_PlayerNumber = i + 1;
-                m_Tanks[i].Setup();
-            }
-            else
-            {
-                // ... create them, set their player number and references needed for control.
-                m_Tanks[i].m_Instance =
-                    Instantiate(m_TankPrefab, m_Tanks[i].m_SpawnPoint.position, m_Tanks[i].m_SpawnPoint.rotation) as GameObject;
-                m_Tanks[i].m_PlayerNumber = i + 1;
-                m_Tanks[i].Setup();
-            }
+            // ... create them, set their player number and references needed for control.
+            m_Tanks[i].m_Instance =
+                Instantiate(m_TankPrefab, m_Tanks[i].m_SpawnPoint.position, m_Tanks[i].m_SpawnPoint.rotation) as GameObject;
+            m_Tanks[i].m_PlayerNumber = i + 1;
+            m_Tanks[i].Setup();
+        }
+
+        // Para todos os tanks bots
+        for (int i = m_Tanks.Length - botTotal; i < m_Tanks.Length; i++)
+        {
+            Debug.Log(m_Tanks[i].m_SpawnPoint);
+            m_Tanks[i].m_Instance =
+                Instantiate(m_TankAIPrefab, m_Tanks[i].m_SpawnPoint.position, m_Tanks[i].m_SpawnPoint.rotation) as GameObject;
+            m_Tanks[i].m_PlayerNumber = i + 1;
+            m_Tanks[i].Setup();
         }
     }
 

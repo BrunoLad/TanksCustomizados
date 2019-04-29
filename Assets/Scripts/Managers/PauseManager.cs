@@ -17,8 +17,9 @@ public class PauseManager : MonoBehaviour
     public ColorPicker picker;
 
     GameObject[] pauseObjects;                      // Referência ao menu de pausa do jogo
-    public bool isActive =  true;                  // Flag para o estado dos controles do tank
-    public static AsyncOperation async;
+    public bool isActive =  true;                   // Flag para o estado dos controles do tank
+    public static AsyncOperation async;             // Evento para controlar o carregamento dos modos de jogo
+    public static bool reloaded = false;            // Flag que indica se o TankPicker sofreu reload
 
     void Start()
     {
@@ -130,6 +131,11 @@ public class PauseManager : MonoBehaviour
         PlayerPrefs.SetString("Player1", ColorUtility.ToHtmlStringRGBA(picker.CurrentColor));
 
         async.allowSceneActivation = true;
+    }
+
+    public void LoadMenu()
+    {
+        SceneManager.LoadSceneAsync("MainMenu");
     }
 
     private void ChangeTankControl() {
