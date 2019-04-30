@@ -63,15 +63,24 @@ public class AITankController : FSM
 
     private void UpdateAttackState()
     {
-        Collider[] players = Physics.OverlapSphere(transform.position, 15.0f, LayerMask.GetMask("Players"));
-        if (players.Length == 0)
+        Collider[] players = Physics.OverlapSphere(transform.position, 15.0f, LayerMask.GetMask(new string[] { "Players", "Bots"}));
+        //Collider[] bots = Physics.OverlapSphere(transform.position, 15.0f, LayerMask.GetMask("Bots"));
+
+        // editing this because I'm getting bots and players
+        if (players.Length == 1)
         {
             curState = FSMState.Patrol;
             player = null;
             navMeshAgent.enabled = true;
             return;
         }
-        player = players[0].gameObject;
+
+        // gets the gameobject that isn't itself, since it's inside the same array
+        foreach (Collider play in players)
+        {
+            if (this.gameObject != play.gameObject) player = play.gameObject;
+        }
+
         Vector3 _direction = (player.transform.position - transform.position).normalized;
         Quaternion _lookRotation = Quaternion.LookRotation(_direction);
         transform.rotation = Quaternion.Slerp(transform.rotation, _lookRotation, Time.deltaTime * 3);
@@ -84,11 +93,16 @@ public class AITankController : FSM
 
     private void UpdatePatrolState()
     {
-        Collider[] players = Physics.OverlapSphere(transform.position, 10.0f, LayerMask.GetMask("Players"));
-        if (players.Length > 0)
+        Collider[] players = Physics.OverlapSphere(transform.position, 10.0f, LayerMask.GetMask(new string[] { "Players", "Bots" }));
+        if (players.Length > 1)
         {
             curState = FSMState.Attack;
-            player = players[0].gameObject;
+
+            foreach (Collider play in players)
+            {
+                if (this.gameObject != play.gameObject) player = play.gameObject;
+            }
+
             navMeshAgent.enabled = false;
             return;
         }
