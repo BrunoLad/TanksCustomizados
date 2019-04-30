@@ -178,7 +178,8 @@ public class PauseManager : MonoBehaviour
 
     public void LoadMenu()
     {
-        SceneManager.LoadSceneAsync("MainMenu");
+        Time.timeScale = 1;
+        SceneManager.LoadScene("MainMenu");
     }
 
     private void ChangeTankControl() {

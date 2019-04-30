@@ -34,16 +34,12 @@ public class TankManager
         // Atribuindo a cor escolhida pelo usuário ao tank
         // Verifica se o jogador 1 já teve cor atribuida
         // Se sim, atribui a cor para o 2° player
-        if (PlayerPrefs.HasKey("Player1"))
+        if (1 == m_PlayerNumber)
         {
             ColorUtility.TryParseHtmlString("#" + PlayerPrefs.GetString("Player1"), out m_PlayerColor);
-            PlayerPrefs.DeleteKey("Player1");
-            Debug.Log(m_PlayerColor);
         } else
         {
             ColorUtility.TryParseHtmlString("#" + PlayerPrefs.GetString("Player2"), out m_PlayerColor);
-            PlayerPrefs.DeleteKey("Player2");
-            Debug.Log(m_PlayerColor);
         }
 
 
