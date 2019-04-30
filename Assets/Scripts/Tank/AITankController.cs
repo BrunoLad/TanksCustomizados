@@ -8,15 +8,18 @@ public class AITankController : FSM
 {
     public TankShooting tankShooter;
     public TankHealth tankHealth;
+
     private bool isDead = false;
     private float elapsedTime = 0.0f;
     private float shootRate = 3.0f;
     private GameObject player = null;
     private NavMeshAgent navMeshAgent;
+
     public enum FSMState
     {
         None, Patrol, Attack, Dead,
     }
+
     //Current state that the NPC is reaching
     public FSMState curState;
 

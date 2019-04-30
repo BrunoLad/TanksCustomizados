@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
     public GameObject m_TankPrefab;             // Reference to the prefab the players will control.
     public GameObject m_TankAIPrefab;           // Reference to the prefab the AI will control
     public TankManager[] m_Tanks;               // A collection of managers for enabling and disabling different aspects of the tanks.
-    public int botTotal;
+    public int botTotal;                        // Total de bots existente no modo de jogo
 
 
     private int m_RoundNumber;                  // Which round the game is currently on.
