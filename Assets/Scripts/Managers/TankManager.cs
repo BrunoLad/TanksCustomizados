@@ -30,16 +30,28 @@ public class TankManager
         m_Shooting = m_Instance.GetComponent<TankShooting>();
         m_CanvasGameObject = m_Instance.GetComponentInChildren<Canvas>().gameObject;
 
+
         // Atribuindo a cor escolhida pelo usuário ao tank
-        ColorUtility.TryParseHtmlString("#" + PlayerPrefs.GetString("Player1"), out m_PlayerColor);
-        Debug.Log(m_PlayerColor);
+        // Verifica se o jogador 1 já teve cor atribuida
+        // Se sim, atribui a cor para o 2° player
+        if (PlayerPrefs.HasKey("Player1"))
+        {
+            ColorUtility.TryParseHtmlString("#" + PlayerPrefs.GetString("Player1"), out m_PlayerColor);
+            PlayerPrefs.DeleteKey("Player1");
+            Debug.Log(m_PlayerColor);
+        } else
+        {
+            ColorUtility.TryParseHtmlString("#" + PlayerPrefs.GetString("Player2"), out m_PlayerColor);
+            PlayerPrefs.DeleteKey("Player2");
+            Debug.Log(m_PlayerColor);
+        }
+
 
         // Set the player numbers to be consistent across the scripts.
         m_Movement.m_PlayerNumber = m_PlayerNumber;
         m_Shooting.m_PlayerNumber = m_PlayerNumber;
 
         Color botColorref = RandomColorGenerator();
-        Debug.Log(botColorref);
 
         if (m_Instance.layer == LayerMask.NameToLayer("Players"))
         {

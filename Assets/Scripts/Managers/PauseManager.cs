@@ -14,12 +14,13 @@ public class PauseManager : MonoBehaviour
     public AudioMixerSnapshot paused;               // snapshot para áudio enquanto o jogo estiver pausado
     public AudioMixerSnapshot unpaused;             // snapshot para áudio enquanto o jogo não estiver pausado
     public GameManager gm;                          // referência ao script para controlar os tanks
-    public ColorPicker picker;
+    public ColorPicker picker;                      // referência ao script que escolhe a cor dos tanks
+    public Text text;                               // Texto a ser exibido para o player
 
     GameObject[] pauseObjects;                      // Referência ao menu de pausa do jogo
     public bool isActive =  true;                   // Flag para o estado dos controles do tank
     public static AsyncOperation async;             // Evento para controlar o carregamento dos modos de jogo
-    public static bool reloaded = false;            // Flag que indica se o TankPicker sofreu reload
+    public static bool selected = false;            // Flag que indica se o player1 já escolheu
 
     void Start()
     {
@@ -100,8 +101,13 @@ public class PauseManager : MonoBehaviour
     //loads inputted level
     public void LoadLevel(string level)
     {
+        // Guarda o modo de jogo escolhido pelo jogador
+        PlayerPrefs.SetString("Mode", level);
+
+        // Carrega a cena intermediária
         SceneManager.LoadSceneAsync("TankSelector");
 
+        // Inicia a corotina para preparar a outra fase de jogo
         StartCoroutine(LoadYourAsyncScene(level));
     }
 
@@ -126,11 +132,48 @@ public class PauseManager : MonoBehaviour
 
     public void ActivateScene()
     {
-        // Carrega a cor escolhida pelo usuário
-        PlayerPrefs.DeleteKey("Player1");
-        PlayerPrefs.SetString("Player1", ColorUtility.ToHtmlStringRGBA(picker.CurrentColor));
+        // Se o player 1 já escolheu
+        // reseta para o player 2 escolher e carrega a cena
+        if (selected)
+        {
+            PlayerPrefs.DeleteKey("Player2");
+            PlayerPrefs.SetString("Player2", ColorUtility.ToHtmlStringRGBA(picker.CurrentColor));
+            Debug.Log(picker.CurrentColor);
 
-        async.allowSceneActivation = true;
+            async.allowSceneActivation = true;
+        }
+
+        // Pega o modo de jogo escolhido
+        string mode = PlayerPrefs.GetString("Mode");
+
+        // Verifica se o modo de jogo escolhido foi multiplayer
+        // Caso não tenha sido, carrega direto a cena
+        if ((mode == "Main" || mode == "MultiPlayerPlus") && !selected)
+        {
+            // Carrega a cor escolhida pelo usuário
+            PlayerPrefs.SetString("Player1", ColorUtility.ToHtmlStringRGBA(picker.CurrentColor));
+            Debug.Log(picker.CurrentColor);
+
+            Color aux;
+
+            // Resets the color so the other player can select
+            ColorUtility.TryParseHtmlString("#7ECE40", out aux);
+            picker.CurrentColor = aux;
+
+            //Atualiza o texto
+            text.text = "Player 2 pick your color";
+
+            selected = true;
+        }
+
+        if(mode == "SinglePlayer")
+        {
+            // Carrega a cor escolhida pelo usuário
+            PlayerPrefs.SetString("Player1", ColorUtility.ToHtmlStringRGBA(picker.CurrentColor));
+
+            async.allowSceneActivation = true;
+        }
+
     }
 
     public void LoadMenu()
