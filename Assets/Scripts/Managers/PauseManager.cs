@@ -180,6 +180,7 @@ public class PauseManager : MonoBehaviour
     {
         Time.timeScale = 1;
         SceneManager.LoadScene("MainMenu");
+        selected = false;
     }
 
     private void ChangeTankControl() {
